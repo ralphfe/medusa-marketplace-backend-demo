@@ -1,11 +1,16 @@
-import { Column, Entity } from "typeorm"
+import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm"
 import {
-  // alias the core entity to not cause a naming conflict
   Product as MedusaProduct,
 } from "@medusajs/medusa"
+import { Store } from "./store";
 
 @Entity()
 export class Product extends MedusaProduct {
-  @Column()
-  customAttribute: string
+  @Index("ProductStoreId")
+  @Column({ nullable: true })
+  store_id?: string;
+
+  @ManyToOne(() => Store, (store) => store.products)
+  @JoinColumn({ name: 'store_id', referencedColumnName: 'id' })
+  store?: Store;
 }
